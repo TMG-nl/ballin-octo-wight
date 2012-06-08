@@ -15,13 +15,12 @@ var Config = {
 	url : "/group_phase"
 };
 
-function generateGameTemplate(group) {
+function generateGameTemplate(matches) {
 
-	var opponents = generateOpponents(group);
 	var rows = [];
-	for (var index in opponents) {
-		var t1 = opponents[index][0],
-		    t2 = opponents[index][1];
+	for (var index in matches) {
+		var t1 = matches[index][0],
+		    t2 = matches[index][1];
 
 		rows.push('<tr><td>' + t1 +'</td><td>' + t2 +'</td><td class="score"><input type="text" name="' + t1+ '-' + t2 +'-0" value="" /><input type="text" name="' + t1+ '-' + t2 +'-1" value="" /></td></tr>');
 	}	
@@ -41,9 +40,9 @@ function generateOpponents(group) {
 	return opponents;
 }
 
-function generateLeague(group, groupId) {
+function generateLeague(matches, groupId) {
 
-	var html = '<form id="' + groupId + '" method="post"><table><tbody>' + generateGameTemplate(group)  + '</tbody></table></form>';
+	var html = '<form id="' + groupId + '" method="post"><table><tbody>' + generateGameTemplate(matches)  + '</tbody></table></form>';
 
 	return html;
 }
@@ -54,7 +53,7 @@ function init() {
 	for (var group in Config.groups) {
 	
 		html += "<h2>" + group + "</h2>";
-		html += generateLeague(Config.groups[group], group);	
+		html += generateLeague(generateOpponents(Config.groups[group]), group);	
 	}	
 
 	$('body').append(html);
@@ -96,6 +95,20 @@ function getMatchResults() {
 	return result;
 }
 
+function clearScreen() {
+
+	$("form").remove();
+	$("h2").remove();
+}
+
+function renderKnockoutStage(matches, groupId) {
+	
+	var html = "";
+	html += "<h2>" + groupId + "</h2>";
+	html += generateLeague(matches, groupId);	
+	$('body').append(html);
+}
+
 $(document).ready(function() {
 
 	init();
@@ -106,10 +119,11 @@ $(document).ready(function() {
 		data = JSON.stringify(data);
 		console.log(data);
                 $.ajaxSetup({"contentType": "application/json"});
-		$.post(Config.url, data, function(response) {
+		$.post(Config.url, data, function(knockoutMatches) {
 			
-			alert(JSON.stringify(response));
-		}, 'application/json');
+			clearScreen();
+			renderKnockout(knockoutMatches, "KnockoutStage");
+		}, 'json');
 	});
 });
 
