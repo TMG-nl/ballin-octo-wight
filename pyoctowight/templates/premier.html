@@ -1,0 +1,301 @@
+<html>
+<head>
+<title>Ballin Octo-Wight : Soccer Predictions</title> 
+<style>
+body {
+	background: #A3999A url(../static/background-en_US.jpg) 50% 50% no-repeat fixed;
+	background-size: cover;
+	overflow-x: hidden;
+	margin: 0;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 13px;
+	line-height: 18px;
+	color: #424343;
+	padding: 10px;
+	color: #FFF;
+}
+
+h1 {
+	text-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+}
+
+input[type="text"] {
+	height: 36px;
+	width: 44px;
+	font-size: 22px;
+	line-height: 36px;
+	font-weight: 700;
+	text-align: center;
+	background: #EEE;
+	background: -moz-linear-gradient(top,#B7B7B8 0%,#FEFEFE 100%);
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#B7B7B8),color-stop(100%,#FEFEFE));
+	background: -webkit-linear-gradient(top,#B7B7B8 0%,#FEFEFE 100%);
+	background: -o-linear-gradient(top,#B7B7B8 0%,#FEFEFE 100%);
+	background: -ms-linear-gradient(top,#B7B7B8 0%,#FEFEFE 100%);
+	background: linear-gradient(top,#B7B7B8 0%,#FEFEFE 100%);
+	color: #3D3D3D;
+	border: 1px solid;
+	border-color: #5D5D5E #707070 #888;
+	border-radius: 2px;
+	margin-left: 10px;
+}
+
+input[type="button"] {
+	background-color: #FAA732;
+	background-image: -moz-linear-gradient(top,#FBB450,#F89406);
+	background-image: -ms-linear-gradient(top,#FBB450,#F89406);
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#FBB450),to(#F89406));
+	background-image: -webkit-linear-gradient(top,#FBB450,#F89406);
+	background-image: -o-linear-gradient(top,#FBB450,#F89406);
+	background-image: linear-gradient(top,#FBB450,#F89406);
+	background-repeat: repeat-x;
+	border-color: #F89406 #F89406 #AD6704;
+	border-color: rgba(0, 0, 0, .1)rgba(0, 0, 0, .1)rgba(0, 0, 0, .25);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
+	color: white;
+	padding: 9px 14px;
+	font-size: 15px;
+	line-height: normal;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+input[type="text"]:active, input[type="text"]:focus {
+	background: white;
+	border-color: rgba(0, 0, 0, .32);
+	-moz-box-shadow: 0 0 0 2px rgba(0, 0, 0, .16);
+	-webkit-box-shadow: 0 0 0 2px rgba(0, 0, 0, .16);
+	box-shadow: 0 0 0 2px rgba(0, 0, 0, .16);
+}
+
+table { cell-spacing:0; }
+td { width: 200px; 
+	padding: 5px;
+}
+
+tr {
+	background: #3AAD0C;
+	background: url(../static/wizard-noise.png),#3AAD0C;
+	background: url(../static/wizard-noise.png),-moz-linear-gradient(top,#64D008 0%,#3AAC0C 100%);
+	background: url(../static/wizard-noise.png),-webkit-gradient(linear,left top,left bottom,color-stop(0%,#64D008),color-stop(100%,#3AAC0C));
+	background: url(../static/wizard-noise.png),-webkit-linear-gradient(top,#64D008 0%,#3AAC0C 100%);
+	background: url(../static/wizard-noise.png),-o-linear-gradient(top,#64D008 0%,#3AAC0C 100%);
+	background: url(../static/wizard-noise.png),-ms-linear-gradient(top,#64D008 0%,#3AAC0C 100%);
+	background: url(../static/wizard-noise.png),linear-gradient(top,#64D008 0%,#3AAC0C 100%);
+	border-top: 1px solid #AEDC9D;
+	border-bottom: 1px solid #2D5703;
+	color: white;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+}
+
+tr:nth-child(even) {
+	background: #2E830D;
+	background: url(../static/wizard-noise.png),#2E830D;
+	background: url(../static/wizard-noise.png),-moz-linear-gradient(top,#28750A 0%,#2E830D 100%);
+	background: url(../static/wizard-noise.png),-webkit-gradient(linear,left top,left bottom,color-stop(0%,#28750A),color-stop(100%,#2E830D));
+	background: url(../static/wizard-noise.png),-webkit-linear-gradient(top,#28750A 0%,#2E830D 100%);
+	background: url(../static/wizard-noise.png),-o-linear-gradient(top,#28750A 0%,#2E830D 100%);
+	background: url(../static/wizard-noise.png),-ms-linear-gradient(top,#28750A 0%,#2E830D 100%);
+	background: url(../static/wizard-noise.png),linear-gradient(top,#28750A 0%,#2E830D 100%);
+}
+
+h2 {
+margin:0;
+margin-top: 10px;
+width: 598px;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#424343', endColorstr='#181819', GradientType=0);
+background-color: #313232;
+background-image: -moz-linear-gradient(top,#424343,#181819);
+background-image: -ms-linear-gradient(top,#424343,#181819);
+background-image: -webkit-gradient(linear,0 0,0 100%,from(#424343),to(#181819));
+background-image: -webkit-linear-gradient(top,#424343,#181819);
+background-image: -o-linear-gradient(top,#424343,#181819);
+background-image: linear-gradient(top,#424343,#181819);
+background-repeat: repeat-x;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#424343', endColorstr='#181819', GradientType=0);
+border-top: 1px solid #A0A0A0;
+border-top-color: rgba(250, 252, 253, .2);
+border-radius: 8px 8px 0 0;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, .38);
+-moz-background-clip: border;
+-webkit-background-clip: padding;
+background-clip: padding-box;
+border-bottom: 1px solid #666768;
+padding: 4px 16px;
+}
+
+</style>
+
+<script src="/static/js/jquery-1.7.2.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+var Config = {
+	groups : {
+		groupa : ["Poland", "Greece", "Russia", "Czech", "Netherlands", "Denmark", "Germany", "Portugal", "Spain", "Italy", "Ireland", "Croatia", "France", "England", "Ukraine", "Sweden"]
+	},
+	url : "/premier"
+};
+
+function generateGameTemplate(matches) {
+
+	var rows = [];
+	for (var index in matches) {
+		var t1 = matches[index][0],
+		    t2 = matches[index][1];
+
+		rows.push('<tr><td>' + t1 +'</td><td>' + t2 +'</td><td class="score"><input type="text" name="' + t1+ '-' + t2 +'-0" value="" /><input type="text" name="' + t1+ '-' + t2 +'-1" value="" /></td></tr>');
+	}	
+
+	return rows.join("\n");
+}
+
+function generateOpponents(group) {
+
+	var opponents =[]; 
+	for (var i = 0; i < group.length; i++) {
+		for (var j = i + 1; j < group.length; j++) {
+			opponents.push([group[i], group[j]]);
+		}
+	}	
+
+	return opponents;
+}
+
+function generateLeague(matches, groupId) {
+
+	var html = '<form id="' + groupId + '" method="post"><table cellspacing="0" cellpadding="0"><tbody>' + generateGameTemplate(matches)  + '</tbody></table></form>';
+
+	return html;
+}
+
+function init() {
+	
+	$.get("/premier_reset");
+	generate();
+
+}
+
+function generate() {
+	var html = "";
+	for (var group in Config.groups) {
+	
+		html += "<h2>" + group + "</h2>";
+		html += generateLeague(generateOpponents(Config.groups[group]), group);	
+	}	
+
+	$('body').append(html);
+}
+
+function predict() {
+
+	$(".score").each(function(index, element) {
+		var $inputs = $("input", $(element));
+		var $input1 = $($inputs[0]);
+		var $input2 = $($inputs[1])
+
+		var score1 = rand(); 
+		var score2 = rand();
+		score2 = (score1 == score2) ? score2+1 : score2;
+		
+		$input1.val(score1);
+		$input2.val(score2);
+	});
+}
+
+function rand() {
+	return Math.floor(Math.random()*11);
+}
+
+function getMatchResults() {
+
+	var result = [];
+	$(".score").each(function(index, element) {
+		
+		var $inputs = $("input", $(element));
+		var $input1 = $($inputs[0]);
+		var $input2 = $($inputs[1])
+		
+		//console.log($input1, $input2, $inputs);
+		var teams = $input1.attr("name").split("-");
+		var o = {
+			"team1": teams[0],
+			"team2": teams[1],
+			"score1": $input1.val(),
+			"score2": $input2.val()
+		};
+		result.push(o);
+	});
+
+	return result;
+}
+
+function clearScreen() {
+
+	$("form").remove();
+	$("h2").remove();
+}
+
+function renderKnockoutStage(matches, groupId) {
+	
+	var html = "";
+	html += "<h2>" + groupId + "</h2>";
+	html += generateLeague(matches, groupId);	
+	$('body').append(html);
+}
+
+function renderWinner(winner) {
+	$('body').append("<h1>" + winner + " is the winner!!</h1>");
+}
+
+function renderRanks(ranks) {
+
+	var html = "";
+	for (var i in ranks) {
+		html += '<tr><td>' + ranks[i] + '</td></tr>';
+	}
+	
+	html = "<h2>Ranks</h2><table>" + html + "</table>";
+	$('body').append(html);
+}
+
+$(document).ready(function() {
+
+	init();
+	$("#predict").click(predict);
+	$("#send").click(function() {
+		
+		var data = {"matches": getMatchResults(), "leagues": Config.groups};
+		data = JSON.stringify(data);
+		console.log(data);
+                $.ajaxSetup({"contentType": "application/json"});
+		$.post(Config.url, data, function(response) {
+			
+			clearScreen();
+                        if (response.ranking) {
+				
+				generate();
+				renderRanks(response.ranking);
+
+        	                if (response.next_url) {
+                	                Config.url = response.next_url;
+                        	}
+				
+			} 
+		}, 'json');
+	});
+});
+
+</script>
+</head>
+<body>
+
+<h1>Predict It (Powered by Prolog)</h1>
+
+
+<input type="button" name="predict" id="predict" value="Predict" />
+<input type="button" name="send" id="send" value="Send" />
+</body>
+</html>
