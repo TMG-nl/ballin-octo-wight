@@ -4,13 +4,15 @@ The name says it all.
 
 DEBUG=True
 BASEDIR='/Users/rbp/hyves/hackathon/Jun2012/ballin-octo-wight'
-
+PREMIER_DATAFILE='/tmp/premier_data.pl'
 
 import os
 import subprocess
 import json
 import re
 import tempfile
+from random import random
+from time import time
 from contextlib import contextmanager
 
 from flask import Flask
@@ -29,8 +31,9 @@ def group_phase():
     matches = request.json['matches']
     all_leagues = [leagues[group] for group in sorted(leagues)]
     matches_played = [
-        "match_played({}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
-                                               match['score1'], match['score2'])
+        "match_played({}, {}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
+                                               match['score1'], match['score2'],
+                                                   unique_id())
         for match in matches]
     data = """leagues({}).
     {}
@@ -51,8 +54,9 @@ def knockout_round():
 
     round = [[match['team1'], match['team2']] for match in matches]
     matches_played = [
-        "match_played({}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
-                                               match['score1'], match['score2'])
+        "match_played({}, {}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
+                                                   match['score1'], match['score2'],
+                                                   unique_id())
         for match in matches]
     data = """round({}).
     {}
@@ -72,6 +76,39 @@ def knockout_round():
     return json_response
 
 
+@app.route('/premier_league')
+def premier_index():
+    return render_template('premier.html')
+
+@app.route('/premier_reset')
+def premier_reset():
+    os.unlink(PREMIER_DATAFILE)
+    return ''
+
+@app.route('/premier', methods=['POST'])
+def premier():
+    leagues = request.json['leagues']
+    matches = request.json['matches']
+    all_leagues = [leagues[group] for group in sorted(leagues)]
+    matches_played = [
+        "match_played({}, {}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
+                                               match['score1'], match['score2'],
+                                                   unique_id())
+        for match in matches]
+    data = """leagues({}).
+    {}
+    """.format(prologify_json(json.dumps(all_leagues)),
+               "\n".join(matches_played))
+
+    winners = call_prolog('premier.pl', 'decide_group_phase', data, datafile=PREMIER_DATAFILE)
+
+    json_winners = jsonify_prolog(winners)
+    r = {'winners': json.loads(json_winners),
+         'next_url': url_for('premier')}
+    json_response = json.dumps(r)
+    return json_response
+
+
 def jsonify_prolog(string):
     '''Makes a prolog output string valid JSON'''
     # [[d,b],[h,f],[l,j],[p,n]] -> [["d","b"],["h","f"],["l","j"],["p","n"]]
@@ -85,18 +122,24 @@ def prologify_json(string):
     return prolog_string
 
 
-def call_prolog(filename, goal, data):
-    fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
-    os.close(fh)
-    with open(datafile, "w") as f:
-        f.write(data)
+def call_prolog(filename, goal, data, datafile=None):
+    keep_datafile = datafile is not None
+    if datafile is None:
+        fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
+        os.close(fh)
+    with open(datafile, "a") as f:
+        f.write(data + "\n")
 
     with cd(BASEDIR):
         cmdline = 'swipl -q -t {} -s {} -- {}'.format(
             goal, filename, datafile).split()
         result = subprocess.check_output(cmdline)
-    os.unlink(datafile)
+    if not keep_datafile:
+        os.unlink(datafile)
     return result
+
+def unique_id():
+    return '{}:{}'.format(time(), random())
 
 @contextmanager
 def cd(directory):

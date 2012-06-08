@@ -8,8 +8,8 @@ greater(X,Y) :- points(X,P1), points(Y,P2), P1>=P2.
 first_knockout_round([[A, B], [C, D], [E, F], [G, H]], Round) :-
              Round = [[A, D], [E, H], [B, C], [F, G]].
 
-points_for_match(T1, T2, Points) :-
-        points_for_match_310(T1, T2, Points).
+points_for_match(T1, T2, Points, Id) :-
+        points_for_match_310(T1, T2, Points, Id).
 
 decide_group_phase :-
         [utils],

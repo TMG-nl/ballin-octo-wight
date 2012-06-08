@@ -2,17 +2,17 @@
 
 ranking(League, Result) :- insert_sort(League, Result).
 
-points_for_match_310(T1, T2, 3) :-
-        match_played(T1, T2, S1, S2), S1>S2;
-        match_played(T2, T1, S2, S1), S1>S2.
-points_for_match_310(T1, T2, 1) :-
-        match_played(T1, T2, S1, S2), S1=S2;
-        match_played(T2, T1, S2, S1), S2=S1.
-points_for_match_310(T1, T2, 0) :-
-        match_played(T1, T2, S1, S2), S1<S2;
-        match_played(T2, T1, S2, S1), S1<S2.
+points_for_match_310(T1, T2, 3, Id) :-
+        match_played(T1, T2, S1, S2, Id), S1>S2;
+        match_played(T2, T1, S2, S1, Id), S1>S2.
+points_for_match_310(T1, T2, 1, Id) :-
+        match_played(T1, T2, S1, S2, Id), S1=S2;
+        match_played(T2, T1, S2, S1, Id), S2=S1.
+points_for_match_310(T1, T2, 0, Id) :-
+        match_played(T1, T2, S1, S2, Id), S1<S2;
+        match_played(T2, T1, S2, S1, Id), S1<S2.
 
-points(Team, Points):- findall(P, points_for_match(Team,_,P), Y), sum(Y, Points).
+points(Team, Points):- findall(P, points_for_match(Team,_,P, Id), Y), sum(Y, Points).
 
 group_phase([], []).
 group_phase([FirstLeague | Rest], Winners) :- group_phase(Rest, NextWinners), 
