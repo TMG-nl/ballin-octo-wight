@@ -84,9 +84,12 @@ function getMatchResults() {
 		
 		//console.log($input1, $input2, $inputs);
 		var teams = $input1.attr("name").split("-");
-		var o = {};
-		o[teams[0]] = $input1.val();
-		o[teams[1]] = $input2.val();
+		var o = {
+			"team1": teams[0],
+			"team2": teams[1],
+			"score1": $input1.val(),
+			"score2": $input2.val()
+		};
 		result.push(o);
 	});
 
@@ -101,6 +104,7 @@ $(document).ready(function() {
 		
 		var data = {"matches": getMatchResults(), "leagues": Config.groups};
 		
+		console.log(data);
 		$.post(Config.url, data, function(response) {
 			
 			alert(JSON.stringify(response));
