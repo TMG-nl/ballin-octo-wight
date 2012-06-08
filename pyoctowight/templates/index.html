@@ -61,15 +61,22 @@ function init() {
 
 function predict() {
 
-	$("input[type=text]").each(function(index, element) {
-		$(this).val(
-			Math.floor(Math.random()*11)
-		);
+	$(".score").each(function(index, element) {
+		var $inputs = $("input", $(element));
+		var $input1 = $($inputs[0]);
+		var $input2 = $($inputs[1])
+
+		var score1 = rand(); 
+		var score2 = rand();
+		score2 = (score1 == score2) ? score2+1 : score2;
+		
+		$input1.val(score1);
+		$input2.val(score2);
 	});
 }
 
-function submitToRemote(matchResults) {
-
+function rand() {
+	return Math.floor(Math.random()*11);
 }
 
 function getMatchResults() {
