@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>Ballin Octo-Wight : Soccer Predictions</title> 
+<script src="http://code.jquery.com/jquery-1.7.2.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+var Config = {
+	groups : {
+		groupa : ["Poland", "Greece", "Russia", "Czech"],
+		groupb : ["Netherlands", "Denmark", "Germany", "Portugal"],
+		groupc : ["Spain", "Italy", "Ireland", "Croatia"],
+		groupd : ["France", "England", "Ukraine", "Sweden"]
+	},
+	url : "/group_phase"
+};
+
+function generateGameTemplate(group) {
+
+	var opponents = generateOpponents(group);
+	var rows = [];
+	for (var index in opponents) {
+		var t1 = opponents[index][0],
+		    t2 = opponents[index][1];
+
+		rows.push('<tr><td>' + t1 +'</td><td>' + t2 +'</td><td class="score"><input type="text" name="' + t1+ '-' + t2 +'-0" value="" /><input type="text" name="' + t1+ '-' + t2 +'-1" value="" /></td></tr>');
+	}	
+
+	return rows.join("\n");
+}
+
+function generateOpponents(group) {
+
+	var opponents =[]; 
+	for (var i = 0; i < group.length; i++) {
+		for (var j = i + 1; j < group.length; j++) {
+			opponents.push([group[i], group[j]]);
+		}
+	}	
+
+	return opponents;
+}
+
+function generateLeague(group, groupId) {
+
+	var html = '<form id="' + groupId + '" method="post"><table><tbody>' + generateGameTemplate(group)  + '</tbody></table></form>';
+
+	return html;
+}
+
+function init() {
+	
+	var html = "";
+	for (var group in Config.groups) {
+	
+		html += "<h2>" + group + "</h2>";
+		html += generateLeague(Config.groups[group], group);	
+	}	
+
+	$('body').append(html);
+}
+
+function predict() {
+
+	$("input[type=text]").each(function(index, element) {
+		$(this).val(
+			Math.floor(Math.random()*11)
+		);
+	});
+}
+
+function submitToRemote(matchResults) {
+
+}
+
+function getMatchResults() {
+
+	var result = [];
+	$(".score").each(function(index, element) {
+		
+		var $inputs = $("input", $(element));
+		var $input1 = $($inputs[0]);
+		var $input2 = $($inputs[1])
+		
+		//console.log($input1, $input2, $inputs);
+		var teams = $input1.attr("name").split("-");
+		var o = {};
+		o[teams[0]] = $input1.val();
+		o[teams[1]] = $input2.val();
+		result.push(o);
+	});
+
+	return result;
+}
+
+$(document).ready(function() {
+
+	init();
+	$("#predict").click(predict);
+	$("#send").click(function() {
+		
+		var data = {"matches": getMatchResults(), "leagues": Config.groups};
+		
+		$.post(Config.url, data, function(response) {
+			
+			alert(JSON.stringify(response));
+		});
+	});
+});
+
+</script>
+</head>
+<body>
+
+<h1>Predict It (Powered by Prolog)</h1>
+
+
+<input type="button" name="predict" id="predict" value="Predict" />
+<input type="button" name="send" id="send" value="Send" />
+</body>
+</html>
