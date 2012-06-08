@@ -145,11 +145,19 @@ function generateGameTemplate(matches) {
 	for (var index in matches) {
 		var t1 = matches[index][0],
 		    t2 = matches[index][1];
-
+                if (typeof t1 == 'undefined') {
+                        continue;
+                }
 		rows.push('<tr><td>' + t1 +'</td><td>' + t2 +'</td><td class="score"><input type="text" name="' + t1+ '-' + t2 +'-0" value="" /><input type="text" name="' + t1+ '-' + t2 +'-1" value="" /></td></tr>');
 	}	
 
 	return rows.join("\n");
+}
+
+function shuffle(array) {
+        var s = [];
+        while (array.length) s.push(array.splice(Math.random() * array.length, 1)[0]);
+        return s;
 }
 
 function generateOpponents(group) {
@@ -159,18 +167,13 @@ function generateOpponents(group) {
 	var lrand = function(l) {
 		return Math.floor(Math.random()*l);
 	};
-	
+
+        clone = shuffle(clone);
 	while(clone.length > 0) {
-		var pos = lrand(clone.length
-		var t1 = clone[pos];
-		delete clone[pos];
-		var pos2 = lrand(clone.length
-		var t2 = clone[pos2];
-		delete clone[pos2];
-
-		opponents.push([t1, t2]);
-	}	
-
+		var t1 = clone.pop();
+		var t2 = clone.pop();
+                opponents.push([t1, t2]);
+	}
 	return opponents;
 }
 

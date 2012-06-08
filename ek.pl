@@ -12,25 +12,17 @@ points_for_match(T1, T2, Points, Id) :-
         points_for_match_310(T1, T2, Points, Id).
 
 decide_group_phase :-
-        [utils],
-        [league],
-        current_prolog_flag(argv, Argv),
-        last_element(Argv, Data),
-        [Data],
+        [utils], [league],
+        current_prolog_flag(argv, Argv), last_element(Argv, Data), [Data],
         leagues(X), group_phase(X, Winners),
         first_knockout_round(Winners, FirstKnockoutRound),
         write(FirstKnockoutRound).
 
 decide_next_knockout_round :-
-        [utils],
-        [knockout],
-        current_prolog_flag(argv, Argv),
-        last_element(Argv, Data),
-        [Data],
+        [utils], [knockout],
+        current_prolog_flag(argv, Argv), last_element(Argv, Data), [Data],
         round(X),
-        (
-         (len(X, 1), winner(X, Next));
-         (next_round(X, Next))
-        ),
+        ((len(X, 1), winner(X, Next));
+         (next_round(X, Next))),
         write(Next).
 

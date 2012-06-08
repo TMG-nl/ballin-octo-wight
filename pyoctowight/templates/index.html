@@ -245,6 +245,8 @@ function renderKnockoutStage(matches, groupId) {
 
 function renderWinner(winner) {
 	$('body').append("<h1>" + winner + " is the winner!!</h1>");
+        $('#predict').hide();
+        $('#send').hide();
 }
 
 $(document).ready(function() {
