@@ -1,3 +1,5 @@
+#!/usr/bin/env swipl -q -t decide_group_phase -s
+
 insert_sort(List,Sorted):-i_sort(List,[],Sorted).
 i_sort([],Acc,Acc).
 i_sort([H|T],Acc,Sorted):-insert(H,Acc,NAcc),i_sort(T,NAcc,Sorted).
@@ -31,6 +33,18 @@ group_phase([FirstLeague | Rest], Winners) :- group_phase(Rest, NextWinners),
 					ranking(FirstLeague, [First, Second | _]),
 					Winners = [[First, Second] | NextWinners].
 
+
+last_element([A], A).
+last_element([_ | Tail], A) :- last_element(Tail, A).
+
+decide_group_phase :-
+        current_prolog_flag(argv, Argv),
+        last_element(Argv, Data),
+        [Data],
+        leagues(X), group_phase(X, Winners),
+        write(Winners).
+
+%:- leagues(X), group_phase(X, Winners).
 
 %% Test data
 % leagues([
