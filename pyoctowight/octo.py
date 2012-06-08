@@ -11,6 +11,7 @@ import subprocess
 import json
 import re
 import tempfile
+from contextlib import contextmanager
 
 from flask import Flask
 from flask import request, render_template, url_for
@@ -36,18 +37,10 @@ def group_phase():
     """.format(prologify_json(json.dumps(all_leagues)),
                "\n".join(matches_played))
 
-    fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
-    os.close(fh)
-    with open(datafile, "w") as f:
-        f.write(data)
+    first_knockout = call_prolog('ek.pl', 'decide_group_phase', data)
 
-    league_exec = os.path.join(BASEDIR, 'league.pl')
-    winners = subprocess.check_output(
-        [league_exec, datafile])
-    os.unlink(datafile)
-
-    json_winners = jsonify_prolog(winners)
-    r = {'winners': json.loads(json_winners),
+    json_knockout = jsonify_prolog(first_knockout)
+    r = {'winners': json.loads(json_knockout),
          'next_url': url_for('knockout_round')}
     json_response = json.dumps(r)
     return json_response
@@ -66,15 +59,7 @@ def knockout_round():
     """.format(prologify_json(json.dumps(round)),
                "\n".join(matches_played))
 
-    fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
-    os.close(fh)
-    with open(datafile, "w") as f:
-        f.write(data)
-
-    knockout_exec = os.path.join(BASEDIR, 'knockout.pl')
-    next_round = subprocess.check_output(
-        [knockout_exec, datafile])
-    os.unlink(datafile)
+    next_round = call_prolog('ek.pl', 'decide_next_knockout_round', data)
 
     json_next = jsonify_prolog(next_round)
     winners = json.loads(json_next)
@@ -98,6 +83,30 @@ def prologify_json(string):
     # [["D","B"],["H","F"],["L","J"],["P","N"]] -> [[d,b],[h,f],[l,j],[p,n]]
     prolog_string = re.sub(r'"(\w+)"', lambda m: m.group(1).lower(), string, flags=re.I)
     return prolog_string
+
+
+def call_prolog(filename, goal, data):
+    fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
+    os.close(fh)
+    with open(datafile, "w") as f:
+        f.write(data)
+
+    with cd(BASEDIR):
+        cmdline = 'swipl -q -t {} -s {} -- {}'.format(
+            goal, filename, datafile).split()
+        result = subprocess.check_output(cmdline)
+    os.unlink(datafile)
+    return result
+
+@contextmanager
+def cd(directory):
+    original_dir = os.getcwd()
+    if not original_dir.endswith(directory):
+        os.chdir(directory)
+    try:
+        yield
+    finally:
+        os.chdir(original_dir)
 
 
 if __name__ == '__main__':
