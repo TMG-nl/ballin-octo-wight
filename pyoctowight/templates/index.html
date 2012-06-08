@@ -119,10 +119,14 @@ $(document).ready(function() {
 		data = JSON.stringify(data);
 		console.log(data);
                 $.ajaxSetup({"contentType": "application/json"});
-		$.post(Config.url, data, function(knockoutMatches) {
+		$.post(Config.url, data, function(response) {
 			
 			clearScreen();
-			renderKnockout(knockoutMatches, "KnockoutStage");
+                        knockoutMatches = response.winners;
+                        if (response.next_url) {
+                                Config.url = response.next_url;
+                        }
+			renderKnockoutStage(knockoutMatches, "KnockoutStage");
 		}, 'json');
 	});
 });
