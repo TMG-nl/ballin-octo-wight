@@ -116,6 +116,10 @@ function renderKnockoutStage(matches, groupId) {
 	$('body').append(html);
 }
 
+function renderWinner(winner) {
+	$('body').append("<h1>" + winner + " is the winner!!</h1>");
+}
+
 $(document).ready(function() {
 
 	init();
@@ -129,11 +133,15 @@ $(document).ready(function() {
 		$.post(Config.url, data, function(response) {
 			
 			clearScreen();
-                        knockoutMatches = response.winners;
-                        if (response.next_url) {
-                                Config.url = response.next_url;
-                        }
-			renderKnockoutStage(knockoutMatches, "KnockoutStage");
+                        if (response.winners) {
+				knockoutMatches = response.winners;
+        	                if (response.next_url) {
+                	                Config.url = response.next_url;
+                        	}
+				renderKnockoutStage(knockoutMatches, "KnockoutStage");
+			} else if (response.winner) {
+				renderWinner(response.winner);
+			}
 		}, 'json');
 	});
 });
