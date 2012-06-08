@@ -13,7 +13,7 @@ import re
 import tempfile
 
 from flask import Flask
-from flask import request, render_template
+from flask import request, render_template, url_for
 
 app = Flask(__name__)
 
@@ -40,13 +40,51 @@ def group_phase():
     os.close(fh)
     with open(datafile, "w") as f:
         f.write(data)
-    os.unlink(datafile)
 
     league_exec = os.path.join(BASEDIR, 'league.pl')
     winners = subprocess.check_output(
         [league_exec, datafile])
+    os.unlink(datafile)
+
     json_winners = jsonify_prolog(winners)
-    return json_winners
+    r = {'winners': json.loads(json_winners),
+         'next_url': url_for('knockout_round')}
+    json_response = json.dumps(r)
+    return json_response
+
+@app.route('/knockout_round', methods=['POST'])
+def knockout_round():
+    matches = request.json['matches']
+
+    round = [[match['team1'], match['team2']] for match in matches]
+    matches_played = [
+        "match_played({}, {}, {}, {}).".format(match['team1'].lower(), match['team2'].lower(),
+                                               match['score1'], match['score2'])
+        for match in matches]
+    data = """round({}).
+    {}
+    """.format(prologify_json(json.dumps(round)),
+               "\n".join(matches_played))
+
+    fh, datafile = tempfile.mkstemp(prefix='ballinoctowight-', suffix='.pl')
+    os.close(fh)
+    with open(datafile, "w") as f:
+        f.write(data)
+
+    knockout_exec = os.path.join(BASEDIR, 'knockout.pl')
+    next_round = subprocess.check_output(
+        [knockout_exec, datafile])
+    os.unlink(datafile)
+
+    json_next = jsonify_prolog(next_round)
+    winners = json.loads(json_next)
+    r = {'next_url': url_for('knockout_round')}
+    if isinstance(winners, basestring):
+        r['winner'] = winners
+    else:
+        r['winners'] = winners
+    json_response = json.dumps(r)
+    return json_response
 
 
 def jsonify_prolog(string):
