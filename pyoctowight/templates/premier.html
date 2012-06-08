@@ -157,16 +157,16 @@ function generateOpponents(group) {
 	var opponents =[]; 
 	var clone = group.slice(0);
 	var lrand = function(l) {
-		Math.floor(Math.random()*l);
+		return Math.floor(Math.random()*l);
 	};
 	
 	while(clone.length > 0) {
 		var pos = lrand(clone.length
 		var t1 = clone[pos];
-		del clone[pos];
+		delete clone[pos];
 		var pos2 = lrand(clone.length
 		var t2 = clone[pos2];
-		del clone[pos2];
+		delete clone[pos2];
 
 		opponents.push([t1, t2]);
 	}	
