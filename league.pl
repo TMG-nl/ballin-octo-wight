@@ -1,32 +1,18 @@
-#!/usr/bin/env swipl -q -t decide_group_phase -s
-
-insert_sort(List,Sorted):-i_sort(List,[],Sorted).
-i_sort([],Acc,Acc).
-i_sort([H|T],Acc,Sorted):-insert(H,Acc,NAcc),i_sort(T,NAcc,Sorted).
-
-insert(X,[Y|T],[Y|NT]):-not(more_points(X,Y)),insert(X,T,NT).
-insert(X,[Y|T],[X,Y|T]):-more_points(X,Y).
-insert(X,[],[X]).
-
-
-sum([], 0).
-sum([H|T], S) :- sum(T,H1), S is H1+H.
-
-more_points(X,Y) :- points(X,P1), points(Y,P2), P1>=P2.
-
+#!/usr/bin/env swipl -q -s
 
 ranking(League, Result) :- insert_sort(League, Result).
 
-
-points_for_match(T1, T2, 3) :- match_played(T1, T2, S1, S2), S1>S2;
-                               match_played(T2, T1, S2, S1), S1>S2.
-points_for_match(T1, T2, 1) :- match_played(T1, T2, S1, S2), S1=S2;
-			       match_played(T2, T1, S2, S1), S2=S1.
-points_for_match(T1, T2, 0) :- match_played(T1, T2, S1, S2), S1<S2;
-			       match_played(T2, T1, S2, S1), S1<S2.
+points_for_match_310(T1, T2, 3) :-
+        match_played(T1, T2, S1, S2), S1>S2;
+        match_played(T2, T1, S2, S1), S1>S2.
+points_for_match_310(T1, T2, 1) :-
+        match_played(T1, T2, S1, S2), S1=S2;
+        match_played(T2, T1, S2, S1), S2=S1.
+points_for_match_310(T1, T2, 0) :-
+        match_played(T1, T2, S1, S2), S1<S2;
+        match_played(T2, T1, S2, S1), S1<S2.
 
 points(Team, Points):- findall(P, points_for_match(Team,_,P), Y), sum(Y, Points).
-
 
 group_phase([], []).
 group_phase([FirstLeague | Rest], Winners) :- group_phase(Rest, NextWinners), 
@@ -34,15 +20,9 @@ group_phase([FirstLeague | Rest], Winners) :- group_phase(Rest, NextWinners),
 					Winners = [[First, Second] | NextWinners].
 
 
-last_element([A], A).
-last_element([_ | Tail], A) :- last_element(Tail, A).
 
-decide_group_phase :-
-        current_prolog_flag(argv, Argv),
-        last_element(Argv, Data),
-        [Data],
-        leagues(X), group_phase(X, Winners),
-        write(Winners).
+
+
 
 %:- leagues(X), group_phase(X, Winners).
 

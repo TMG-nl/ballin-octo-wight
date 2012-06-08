@@ -12,22 +12,6 @@ winner(CurrentRound, Winner) :- next_round(CurrentRound, NextRound), winner(Next
 winnerOf(T1, T2, T1) :- match_played(T1, T2, S1, S2), S1>S2.
 winnerOf(T1, T2, T2) :- match_played(T1, T2, S1, S2), S2>S1.
 
-last_element([A], A).
-last_element([_ | Tail], A) :- last_element(Tail, A).
-
-len([], 0).
-len([_ | Tail], Len) :- len(Tail, Ltail), Len is Ltail + 1.
-
-decide_next_round :-
-        current_prolog_flag(argv, Argv),
-        last_element(Argv, Data),
-        [Data],
-        round(X),
-        (
-         (len(X, 1), winner(X, Next));
-         (next_round(X, Next))
-        ),
-        write(Next).
 
 
 %% Test data
