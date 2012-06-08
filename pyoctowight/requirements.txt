@@ -1,0 +1,5 @@
+Flask==0.8
+-e git+https://github.com/evoloshchuk/flask-debugtoolbar.git#egg=Flask_DebugToolbar-dev
+Jinja2==2.6
+Werkzeug==0.8.3
+chardet==1.0.1
