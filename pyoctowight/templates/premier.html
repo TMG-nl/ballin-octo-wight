@@ -155,10 +155,20 @@ function generateGameTemplate(matches) {
 function generateOpponents(group) {
 
 	var opponents =[]; 
-	for (var i = 0; i < group.length; i++) {
-		for (var j = i + 1; j < group.length; j++) {
-			opponents.push([group[i], group[j]]);
-		}
+	var clone = group.slice(0);
+	var lrand = function(l) {
+		Math.floor(Math.random()*l);
+	};
+	
+	while(clone.length > 0) {
+		var pos = lrand(clone.length
+		var t1 = clone[pos];
+		del clone[pos];
+		var pos2 = lrand(clone.length
+		var t2 = clone[pos2];
+		del clone[pos2];
+
+		opponents.push([t1, t2]);
 	}	
 
 	return opponents;
